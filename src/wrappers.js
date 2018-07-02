@@ -42,12 +42,17 @@ wrappers[".google.protobuf.Any"] = {
 
         // unwrap value type if mapped
         if (object && object["@type"]) {
-            var type = this.lookup(object["@type"]);
+            var typeName = object["@type"];
+            if (typeName.startsWith('type.googleapis.com/')) {
+              typeName = typeName.replace('type.googleapis.com/', '.');
+            }
+
+            var type = this.lookup(typeName);
             /* istanbul ignore else */
             if (type) {
                 // type_url does not accept leading "."
-                var type_url = object["@type"].charAt(0) === "." ?
-                    object["@type"].substr(1) : object["@type"];
+                var type_url = typeName.charAt(0) === "." ?
+                    typeName.substr(1) : typeName;
                 // type_url prefix is optional, but path seperator is required
                 return this.create({
                     type_url: "/" + type_url,
