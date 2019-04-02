@@ -1,6 +1,6 @@
 /*!
  * protobuf.js v6.8.7 (c) 2016, daniel wirtz
- * compiled fri, 18 may 2018 08:55:41 utc
+ * compiled tue, 02 apr 2019 09:13:17 utc
  * licensed under the bsd-3-clause license
  * see: https://github.com/dcodeio/protobuf.js for details
  */
@@ -6562,12 +6562,17 @@ wrappers[".google.protobuf.Any"] = {
 
         // unwrap value type if mapped
         if (object && object["@type"]) {
-            var type = this.lookup(object["@type"]);
+            var typeName = object["@type"];
+            if (typeName.startsWith('type.googleapis.com/')) {
+              typeName = typeName.replace('type.googleapis.com/', '.');
+            }
+
+            var type = this.lookup(typeName);
             /* istanbul ignore else */
             if (type) {
                 // type_url does not accept leading "."
-                var type_url = object["@type"].charAt(0) === "." ?
-                    object["@type"].substr(1) : object["@type"];
+                var type_url = typeName.charAt(0) === "." ?
+                    typeName.substr(1) : typeName;
                 // type_url prefix is optional, but path seperator is required
                 return this.create({
                     type_url: "/" + type_url,
@@ -6594,7 +6599,7 @@ wrappers[".google.protobuf.Any"] = {
         // wrap value if unmapped
         if (!(message instanceof this.ctor) && message instanceof Message) {
             var object = message.$type.toObject(message, options);
-            object["@type"] = message.$type.fullName;
+            object["@type"] = "type.googleapis.com/"+message.$type.fullName.substr(1);
             return object;
         }
 
