@@ -62,6 +62,12 @@ function Type(name, options) {
     this.group = undefined; // toJSON
 
     /**
+     * The name of the file containing this message.
+     * @type {string}
+     */
+    this.filename = undefined; // toJSON
+
+    /**
      * Cached fields by id.
      * @type {Object.<number,Field>|null}
      * @private
@@ -284,6 +290,7 @@ Type.prototype.toJSON = function toJSON(toJSONOptions) {
     var inherited = Namespace.prototype.toJSON.call(this, toJSONOptions);
     var keepComments = toJSONOptions ? Boolean(toJSONOptions.keepComments) : false;
     return util.toObject([
+        "filename"   , this.filename,
         "options"    , inherited && inherited.options || undefined,
         "oneofs"     , Namespace.arrayToJSON(this.oneofsArray, toJSONOptions),
         "fields"     , Namespace.arrayToJSON(this.fieldsArray.filter(function(obj) { return !obj.declaringField; }), toJSONOptions) || {},
