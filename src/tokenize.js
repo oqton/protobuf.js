@@ -266,15 +266,14 @@ function tokenize(source, alternateCommentMode) {
                                     break;
                                 }
                                 offset++;
-                                line++;
                             } while (isDoubleSlashCommentLine(offset));
                         } else {
                             offset = Math.min(length, findEndOfLine(offset) + 1);
-                            line++;
                         }
                         if (isDoc) {
                             setComment(start, offset);
                         }
+                        line++;
                         repeat = true;
                     }
                 } else if ((curr = charAt(offset)) === "*") { /* Block */
